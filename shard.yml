@@ -1,0 +1,17 @@
+name: kemal-flash
+version: 0.1.0
+
+development_dependencies:
+  kemal:
+    github: kemalcr/kemal
+    version: 0.17.4
+  kemal-session:
+    github: kemalcr/kemal-session
+    version: 0.6.0
+
+authors:
+  - Rimas Silkaitis <rimas@heroku.com>
+
+crystal: 0.20.3
+
+license: MIT
