@@ -22,7 +22,6 @@ module Kemal::Flash
     end
 
     def [](k : String)
-      puts "discarding"
       @discard.add(k)
       @values[k]
     end
@@ -40,7 +39,6 @@ module Kemal::Flash
     end
 
     def self.unserialize(val : String)
-      puts "unserializing"
       flash_hash = self.from_json(val)
       flash_hash.sweep
       flash_hash
@@ -56,7 +54,6 @@ module Kemal::Flash
     end
 
     def serialize
-      puts "serializing"
       @values.reject!(@discard)
       @discard.clear
       self.to_json
