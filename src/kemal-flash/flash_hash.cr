@@ -39,9 +39,9 @@ module Kemal::Flash
     end
 
     def self.unserialize(val : String)
-      flash_hash = self.from_json(val)
+      flash_hash = Kemal::Flash::FlashHash.from_json(val)
       flash_hash.sweep
-      flash_hash
+      return flash_hash
     end
 
     # Will remove any values that are in the discard set
@@ -56,7 +56,7 @@ module Kemal::Flash
     def serialize
       @values.reject!(@discard)
       @discard.clear
-      self.to_json
+      to_json
     end
   end
 end

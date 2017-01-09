@@ -6,6 +6,7 @@ class HTTP::Server::Context
       objs = session.objects
       f = uninitialized Kemal::Flash::FlashHash
       if !objs.nil? && objs.keys.includes?("flash")
+        puts "here"
         f = session.object("flash").as(Kemal::Flash::FlashHash)
       else
         f = Kemal::Flash::FlashHash.new
