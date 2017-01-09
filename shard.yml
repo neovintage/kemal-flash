@@ -8,10 +8,11 @@ development_dependencies:
   kemal-session:
     github: kemalcr/kemal-session
     version: 0.6.0
+  spec-kemal:
+    github: kemalcr/spec-kemal
+    version: 0.4.0
 
 authors:
-  - Rimas Silkaitis <rimas@heroku.com>
-
-crystal: 0.20.3
+  - Rimas Silkaitis <neovintage@gmail.com>
 
 license: MIT
