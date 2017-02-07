@@ -52,23 +52,23 @@ describe FlashHash do
   it "can be serialized as a StorableObject" do
     fh = FlashHash.new
     fh["chuck"] = "snoopy"
-    fh.serialize.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
 
     fh.discard("chuck")
-    fh.serialize.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
 
     fh.discard("linus")
-    fh.serialize.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
   end
 
   it "can be unserialized as a StorableObject" do
-    fh = FlashHash.unserialize("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
+    fh = FlashHash.from_json("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
     fh.to_h.should eq({ "chuck" => "snoopy" })
-    fh.serialize.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
   end
 
   it "can be unserialized as a StorableObject when discard exists" do
-    fh = FlashHash.unserialize("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\"]}")
+    fh = FlashHash.from_json("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\"]}")
     fh.to_h.should eq({} of String => String)
   end
 

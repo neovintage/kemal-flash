@@ -3,10 +3,12 @@ require "./spec_helper"
 describe Kemal::Flash do
   it "should use flash" do
     get "/set_flash"
-    get "/use_flash"
+    headers = HTTP::Headers{ "Cookie" => response.headers.get("Set-Cookie") }
+
+    get "/use_flash", headers
     response.body.should eq("snoopy")
 
-    #get "/use_flash"
+    #get "/use_flash", headers
     #response.body.should eq("")
   end
 

@@ -4,10 +4,10 @@ version: 0.1.0
 development_dependencies:
   kemal:
     github: kemalcr/kemal
-    version: 0.17.4
+    version: 0.17.5
   kemal-session:
     github: kemalcr/kemal-session
-    version: 0.6.0
+    version: 0.7.0
   spec-kemal:
     github: kemalcr/spec-kemal
     version: 0.4.0

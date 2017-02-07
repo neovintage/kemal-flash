@@ -1,5 +1,5 @@
 module Kemal::Flash
-  class FlashHash < Session::StorableObject
+  class BaseHash
     JSON.mapping({
       values: Hash(String, String),
       discard: {type: Set(String), getter: false},
@@ -10,6 +10,14 @@ module Kemal::Flash
       @values  = Hash(String, String).new
       @discard = Set(String).new
     end
+  end
+
+  # This is a hack so that a callback mechanism exists when
+  # serializing and deserializing the json for the flash
+  # from session storage.
+  #
+  class FlashHash < BaseHash
+    include Session::StorableObject
 
     def update(h : Hash(String, String))
       @discard.subtract h.keys
@@ -38,25 +46,26 @@ module Kemal::Flash
       @discard.merge!(@values.keys)
     end
 
-    def self.unserialize(val : String)
-      flash_hash = Kemal::Flash::FlashHash.from_json(val)
-      flash_hash.sweep
-      return flash_hash
-    end
-
     # Will remove any values that are in the discard set
     # and any keys that weren't rejected will now be up for
     # discard at the end of the current action
     #
     def sweep #:nodoc:
-      @values.reject!(@discard)
+      @values.reject!(@discard.to_a)
       @discard = Set(String).new(@values.keys)
     end
 
-    def serialize
-      @values.reject!(@discard)
+    def self.from_json(string_or_io)
+      parser = JSON::PullParser.new(string_or_io)
+      flash_hash = self.new(parser)
+      flash_hash.sweep
+      return flash_hash
+    end
+
+    def to_json
+      @values.reject!(@discard.to_a)
       @discard.clear
-      to_json
+      super
     end
   end
 end
