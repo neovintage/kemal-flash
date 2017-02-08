@@ -1,23 +1,54 @@
+require "json"
+
 module Kemal::Flash
-  class BaseHash
+  # This is a hack so that a callback mechanism exists when
+  # serializing and deserializing the json for the flash
+  # from session storage.
+  #
+  class FlashHash
     JSON.mapping({
       values: Hash(String, String),
       discard: {type: Set(String), getter: false},
     })
     delegate each, empty?, keys, has_key?, delete, to_h, to: @values
 
+    def self.from_json(string_or_io)
+      parser = JSON::PullParser.new(string_or_io)
+      flash_hash = self.new(parser)
+      flash_hash.sweep
+      return flash_hash
+    end
+
+    def to_json
+      JSON.build do |json|
+        to_json(json)
+      end
+    end
+
+    def to_json(json : JSON::Builder)
+      @values.reject!(@discard.to_a)
+      @discard.clear
+
+      json.object do
+        json.field "values" { json.object {
+          @values.each do |k, v|
+            json.field k, v
+          end
+        } }
+        json.field "discard" { json.array {
+          @discard.each do |k|
+            json.scalar(k)
+          end
+        } }
+      end
+    end
+    include Session::StorableObject
+
     def initialize
       @values  = Hash(String, String).new
       @discard = Set(String).new
     end
-  end
 
-  # This is a hack so that a callback mechanism exists when
-  # serializing and deserializing the json for the flash
-  # from session storage.
-  #
-  class FlashHash < BaseHash
-    include Session::StorableObject
 
     def update(h : Hash(String, String))
       @discard.subtract h.keys
@@ -55,17 +86,19 @@ module Kemal::Flash
       @discard = Set(String).new(@values.keys)
     end
 
-    def self.from_json(string_or_io)
-      parser = JSON::PullParser.new(string_or_io)
-      flash_hash = self.new(parser)
-      flash_hash.sweep
-      return flash_hash
-    end
+    #def create_json
+      #@values.reject!(@discard.to_a)
+      #@discard.clear
+      #super.to_json
+    #end
 
-    def to_json
-      @values.reject!(@discard.to_a)
-      @discard.clear
-      super
-    end
+    #def to_json
+      #puts "clearing out"
+      ##create_json
+      #@values.reject!(@discard.to_a)
+      #@discard.clear
+      #super
+    #end
+
   end
 end
