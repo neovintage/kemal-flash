@@ -1,6 +1,9 @@
 # kemal-flash
 
-TODO: Write a description here
+`kemal-flash` provides a way to pass temporary information between actions. Anything
+that's placed in the flash will be cleared out at the end of the next action. `kemal-flash`
+depends on `kemal-session`. Make sure `kemal-session` is included before including
+`kemal-flash`.
 
 ## Installation
 
@@ -9,20 +12,27 @@ Add this to your application's `shard.yml`:
 ```yaml
 dependencies:
   kemal-flash:
-    github: [your-github-name]/kemal-flash
+    github: neovintage/kemal-flash
+    version: 0.1.0
 ```
 
 ## Usage
 
 ```crystal
+require "kemal"
+require "kemal-session"
 require "kemal-flash"
+
+get "/" do |env|
+  env.flash["notice"] = "welcome"
+end
+
+get "/check_flash" do |env|
+  env.flash["notice"]?
+end
 ```
 
 TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
 
 ## Contributing
 
@@ -34,4 +44,4 @@ TODO: Write development instructions here
 
 ## Contributors
 
-- [[your-github-name]](https://github.com/[your-github-name]) Rimas Silkaitis - creator, maintainer
+- [[neovintage]](https://github.com/neovintage) Rimas Silkaitis - creator, maintainer
