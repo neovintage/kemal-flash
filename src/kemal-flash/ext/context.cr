@@ -17,7 +17,6 @@ class HTTP::Server::Context
 
   #:nodoc:
   def commit_flash!
-    puts "saving flash"
     session.object("flash", flash)
   end
 end

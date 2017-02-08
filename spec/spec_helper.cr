@@ -14,7 +14,7 @@ module TestKemalApp
   end
 
   get "/use_flash" do |context|
-    context.flash["charlie"]
+    context.flash["charlie"]?
   end
 end
 

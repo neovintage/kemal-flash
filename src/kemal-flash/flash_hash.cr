@@ -1,10 +1,6 @@
 require "json"
 
 module Kemal::Flash
-  # This is a hack so that a callback mechanism exists when
-  # serializing and deserializing the json for the flash
-  # from session storage.
-  #
   class FlashHash
     JSON.mapping({
       values: Hash(String, String),
@@ -49,7 +45,6 @@ module Kemal::Flash
       @discard = Set(String).new
     end
 
-
     def update(h : Hash(String, String))
       @discard.subtract h.keys
       @values.merge!(h)
@@ -63,6 +58,11 @@ module Kemal::Flash
     def [](k : String)
       @discard.add(k)
       @values[k]
+    end
+
+    def []?(k : String)
+      @discard.add(k)
+      @values[k]?
     end
 
     # Discards the key at the end of the current action
