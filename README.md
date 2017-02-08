@@ -32,8 +32,6 @@ get "/check_flash" do |env|
 end
 ```
 
-TODO: Write usage instructions here
-
 ## Contributing
 
 1. Fork it ( https://github.com/[your-github-name]/kemal-flash/fork )
