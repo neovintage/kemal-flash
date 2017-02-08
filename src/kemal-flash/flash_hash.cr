@@ -85,20 +85,5 @@ module Kemal::Flash
       @values.reject!(@discard.to_a)
       @discard = Set(String).new(@values.keys)
     end
-
-    #def create_json
-      #@values.reject!(@discard.to_a)
-      #@discard.clear
-      #super.to_json
-    #end
-
-    #def to_json
-      #puts "clearing out"
-      ##create_json
-      #@values.reject!(@discard.to_a)
-      #@discard.clear
-      #super
-    #end
-
   end
 end

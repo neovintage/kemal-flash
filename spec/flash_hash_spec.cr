@@ -54,11 +54,11 @@ describe FlashHash do
     fh["chuck"] = "snoopy"
     fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
 
-    #fh.discard("chuck")
-    #fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
+    fh.discard("chuck")
+    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
 
-    #fh.discard("linus")
-    #fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
+    fh.discard("linus")
+    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
   end
 
   it "can be unserialized as a StorableObject" do
