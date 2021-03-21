@@ -2,10 +2,10 @@ require "json"
 
 module Kemal::Flash
   class FlashHash
-    JSON.mapping({
-      values: Hash(String, String),
-      discard: {type: Set(String), getter: false},
-    })
+    include JSON::Serializable
+    property values : Hash(String, String)
+    @discard : Set(String)
+
     delegate each, empty?, keys, has_key?, delete, to_h, to: @values
 
     def self.from_json(string_or_io)
