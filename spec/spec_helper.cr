@@ -1,12 +1,10 @@
-require "spec"
 require "spec-kemal"
 require "../src/kemal-flash"
 
 ENV["KEMAL_ENV"] = "test"
 
-Kemal.config.logging  = false
-Session.config.engine = Session::MemoryEngine.new
-Session.config.secret = "kemal_rocks"
+Kemal.config.logging = false
+Kemal::Session.config.secret = "kemal_rocks"
 
 module TestKemalApp
   get "/set_flash" do |context|

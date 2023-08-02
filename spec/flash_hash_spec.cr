@@ -23,8 +23,8 @@ describe FlashHash do
     fh["chuck"] = "snoopy"
     fh.update({"chuck" => "linus", "lucy" => "sally"})
 
-    fh["lucy"].should eq("sally")
     fh["chuck"].should eq("linus")
+    fh["lucy"].should eq("sally")
   end
 
   it "should test if key exists" do
@@ -55,20 +55,23 @@ describe FlashHash do
     fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
 
     fh.discard("chuck")
-    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\"]}")
 
     fh.discard("linus")
-    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\",\"linus\"]}")
   end
 
   it "can be unserialized as a StorableObject" do
     fh = FlashHash.from_json("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[]}")
     fh.to_h.should eq({"chuck" => "snoopy"})
-    fh.to_json.should eq("{\"values\":{},\"discard\":[]}")
+    fh.to_json.should eq("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\"]}")
   end
 
   it "can be unserialized as a StorableObject when discard exists" do
-    fh = FlashHash.from_json("{\"values\":{\"chuck\":\"snoopy\"},\"discard\":[\"chuck\"]}")
+    fh = FlashHash.from_json("{\"values\":{\"chuck\":\"snoopy\", \"foo\": \"bar\"},\"discard\":[\"chuck\"]}")
+    fh.to_h.should eq({"foo" => "bar"})
+    fh.to_json.should eq("{\"values\":{\"foo\":\"bar\"},\"discard\":[\"foo\"]}")
+    fh = FlashHash.from_json(fh.to_json)
     fh.to_h.should eq({} of String => String)
   end
 

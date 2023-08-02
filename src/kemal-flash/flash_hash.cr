@@ -24,33 +24,7 @@ module Kemal::Flash
       flash_hash
     end
 
-    # # Define own's version #to_json method use to_json(builder : JSON::Builder)
-    # # for self-defind type which defind by JSON::Serializable module.
-    # def to_json
-    #   JSON.build do |json|
-    #     to_json(json)
-    #   end
-    # end
-
     include Session::StorableObject
-
-    def to_json(json : JSON::Builder)
-      @values.reject!(@discard.to_a)
-      @discard.clear
-
-      json.object do
-        json.field "values" { json.object {
-          @values.each do |k, v|
-            json.field k, v
-          end
-        } }
-        json.field "discard" { json.array {
-          @discard.each do |k|
-            json.scalar(k)
-          end
-        } }
-      end
-    end
 
     def update(h : Hash(String, String))
       @discard.subtract h.keys
@@ -94,5 +68,3 @@ module Kemal::Flash
     end
   end
 end
-
-10
