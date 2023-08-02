@@ -2,24 +2,37 @@ require "json"
 
 module Kemal::Flash
   class FlashHash
-    JSON.mapping({
-      values: Hash(String, String),
-      discard: {type: Set(String), getter: false},
-    })
+    include JSON::Serializable
+
+    property values : Hash(String, String)
+    setter discard : Set(String)
+
     delegate each, empty?, keys, has_key?, delete, to_h, to: @values
 
+    def initialize
+      @values = Hash(String, String).new
+      @discard = Set(String).new
+    end
+
+    # Define own's version #from_json method use self.new(parser | JSON::PullParser)
+    # for self-defined type which defined by JSON::Serializable module.
     def self.from_json(string_or_io)
       parser = JSON::PullParser.new(string_or_io)
       flash_hash = self.new(parser)
       flash_hash.sweep
-      return flash_hash
+
+      flash_hash
     end
 
-    def to_json
-      JSON.build do |json|
-        to_json(json)
-      end
-    end
+    # # Define own's version #to_json method use to_json(builder : JSON::Builder)
+    # # for self-defind type which defind by JSON::Serializable module.
+    # def to_json
+    #   JSON.build do |json|
+    #     to_json(json)
+    #   end
+    # end
+
+    include Session::StorableObject
 
     def to_json(json : JSON::Builder)
       @values.reject!(@discard.to_a)
@@ -37,12 +50,6 @@ module Kemal::Flash
           end
         } }
       end
-    end
-    include Session::StorableObject
-
-    def initialize
-      @values  = Hash(String, String).new
-      @discard = Set(String).new
     end
 
     def update(h : Hash(String, String))
@@ -81,9 +88,11 @@ module Kemal::Flash
     # and any keys that weren't rejected will now be up for
     # discard at the end of the current action
     #
-    def sweep #:nodoc:
+    def sweep # :nodoc:
       @values.reject!(@discard.to_a)
       @discard = Set(String).new(@values.keys)
     end
   end
 end
+
+10
